@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select Nationality</title>
+  <style>
+    body {
+      background: #1e293b;
+      color: #f1f5f9;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 60px;
+    }
+    select, button {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      margin: 10px;
+      font-size: 1rem;
+    }
+    .clubs {
+      margin-top: 20px;
+    }
+    .club-btn {
+      background: #38bdf8;
+      color: #0f172a;
+      margin: 8px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .club-btn:hover {
+      background: #0ea5e9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Select Your Nationality</h1>
+  <select id="nationality">
+    <option value="">-- Select Nationality --</option>
+    <option value="Brazil">Brazil</option>
+    <option value="Argentina">Argentina</option>
+    <option value="England">England</option>
+    <option value="France">France</option>
+    <option value="Spain">Spain</option>
+    <option value="Germany">Germany</option>
+    <option value="USA">USA</option>
+  </select>
+  <br>
+  <button onclick="showClubs()">See Clubs</button>
+
+  <div class="clubs" id="clubs"></div>
+
+  <script>
+    const clubMap = {
+      "Brazil": ["Flamengo", "Palmeiras", "São Paulo"],
+      "Argentina": ["Boca Juniors", "River Plate", "Racing Club"],
+      "England": ["Manchester City", "Liverpool", "Arsenal"],
+      "France": ["PSG", "Marseille", "Lyon"],
+      "Spain": ["Real Madrid", "Barcelona", "Atletico Madrid"],
+      "Germany": ["Bayern Munich", "Borussia Dortmund", "RB Leipzig"],
+      "USA": ["LAFC", "Inter Miami", "Seattle Sounders"]
+    };
+
+    function showClubs() {
+      const nationality = document.getElementById('nationality').value;
+      const clubsDiv = document.getElementById('clubs');
+      clubsDiv.innerHTML = "";
+      if (!nationality || !clubMap[nationality]) return;
+
+      clubMap[nationality].forEach(club => {
+        const btn = document.createElement("button");
+        btn.textContent = club;
+        btn.className = "club-btn";
+        btn.onclick = () => {
+          localStorage.setItem("club", club);
+          localStorage.setItem("nationality", nationality);
+          window.location.href = "urcareer.html";
+        };
+        clubsDiv.appendChild(btn);
+      });
+    }
+  </script>
+</body>
+</html>

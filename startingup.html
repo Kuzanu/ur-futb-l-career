@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Start Your Career</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #f1f5f9;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    input {
+      padding: 12px;
+      margin: 10px;
+      border-radius: 8px;
+      border: none;
+      width: 250px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #38bdf8;
+      color: #0f172a;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #0ea5e9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Start Your Fútbol Career</h1>
+  <input type="text" id="firstName" placeholder="First Name" required>
+  <input type="text" id="lastName" placeholder="Last Name" required>
+  <br>
+  <button onclick="saveName()">Next</button>
+
+  <script>
+    function saveName() {
+      const first = document.getElementById('firstName').value.trim();
+      const last = document.getElementById('lastName').value.trim();
+      if (!first || !last) {
+        alert("Enter both first and last name.");
+        return;
+      }
+      localStorage.setItem("playerName", `${first} ${last}`);
+      window.location.href = "nationality.html";
+    }
+  </script>
+</body>
+</html>

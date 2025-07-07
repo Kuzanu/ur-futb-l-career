@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Fútbol Career</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #f1f5f9;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+    }
+    .stat {
+      margin: 10px 0;
+      font-size: 1.1rem;
+    }
+    button {
+      padding: 14px 28px;
+      font-size: 1rem;
+      background-color: #38bdf8;
+      color: #0f172a;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s ease;
+    }
+    button:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+    }
+    #log {
+      margin-top: 20px;
+      font-style: italic;
+      color: #94a3b8;
+    }
+    #transferModal {
+      display: none;
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 30px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.05);
+    }
+    .club-option {
+      background: #0ea5e9;
+      color: #0f172a;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .club-option:hover {
+      background: #38bdf8;
+    }
+    .upgrade-section {
+      margin-top: 60px;
+    }
+    .upgrade {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>  <h1>⚽ Career Dashboard</h1>  <div class="card">
+    <div class="stat"><strong>Name:</strong> <span id="name">Unknown</span></div>
+    <div class="stat"><strong>Nationality:</strong> <span id="nationality">Unknown</span></div>
+    <div class="stat"><strong>Club:</strong> <span id="club">Unknown</span></div>
+    <div class="stat"><strong>Money:</strong> $<span id="money">0</span></div>
+    <div class="stat"><strong>Level:</strong> <span id="level">1</span></div>
+    <div class="stat"><strong>XP:</strong> <span id="xp">0</span>/<span id="xpMax">100</span></div>
+    <div class="stat"><strong>Fans:</strong> <span id="fans">0</span></div>
+    <div class="stat"><strong>Sponsors:</strong> <span id="sponsors">0</span></div>
+  </div><button id="playBtn" onclick="playMatch()">Play Match</button>
+
+  <div id="log">No matches played yet.</div>  <div id="transferModal">
+    <h2>🌍 Transfer Opportunity!</h2>
+    <p>Choose one of the following clubs to sign with:</p>
+    <div id="transferChoices"></div>
+  </div>  <div class="upgrade-section">
+    <h2>🔧 Upgrades (Each $100,000)</h2>
+    <div class="upgrade">
+      <p><strong>2x Money</strong></p>
+      <button onclick="buyUpgrade('doubleMoney')">Purchase</button>
+    </div>
+    <div class="upgrade">
+      <p><strong>2x Faster Match Button</strong></p>
+      <button onclick="buyUpgrade('fastClick')">Purchase</button>
+    </div>
+    <div class="upgrade">
+      <p><strong>Reduced XP Requirement</strong></p>
+      <button onclick="buyUpgrade('lessXP')">Purchase</button>
+    </div>
+  </div>  <script>
+    let money = 0;
+    let xp = 0;
+    let level = 1;
+    let xpMax = 100;
+    let fans = 0;
+    let sponsors = 0;
+    let cooldownTime = 1200;
+    const allClubs = ["Real Madrid","Barcelona","Liverpool","Manchester United","Manchester City","Arsenal","Bayern Munich","Borussia Dortmund","Juventus","AC Milan","PSG","Inter Milan","Napoli","Chelsea","Tottenham","Atletico Madrid","Ajax","RB Leipzig","Benfica","Sporting CP"];
+
+    let upgrades = {
+      doubleMoney: false,
+      fastClick: false,
+      lessXP: false
+    };
+
+    const name = localStorage.getItem("playerName") || "Unknown";
+    const nationality = localStorage.getItem("nationality") || "Unknown";
+    let club = localStorage.getItem("club") || "Unknown";
+
+    document.getElementById("name").textContent = name;
+    document.getElementById("nationality").textContent = nationality;
+    document.getElementById("club").textContent = club;
+
+    function playMatch() {
+      const btn = document.getElementById("playBtn");
+      btn.disabled = true;
+      setTimeout(() => btn.disabled = false, upgrades.fastClick ? 600 : cooldownTime);
+
+      let earnedMoney = Math.floor(Math.random() * 1000) + 100;
+      const earnedXP = Math.floor(Math.random() * 20) + 10;
+      const earnedFans = Math.floor(Math.random() * 100) + 20;
+
+      if (upgrades.doubleMoney) earnedMoney *= 2;
+
+      money += earnedMoney;
+      xp += earnedXP;
+      fans += earnedFans;
+
+      if (Math.random() < 0.2) sponsors++;
+
+      if (xp >= xpMax) {
+        xp -= xpMax;
+        level++;
+        xpMax += upgrades.lessXP ? 10 : 20;
+        log(`🎉 Level Up! You're now Level ${level}`);
+        if (level % 15 === 0) showTransferOffer();
+      } else {
+        log(`You earned $${earnedMoney}, ${earnedXP} XP and +${earnedFans} fans.`);
+      }
+
+      updateStats();
+    }
+
+    function updateStats() {
+      document.getElementById("money").textContent = money;
+      document.getElementById("xp").textContent = xp;
+      document.getElementById("level").textContent = level;
+      document.getElementById("xpMax").textContent = xpMax;
+      document.getElementById("club").textContent = club;
+      document.getElementById("fans").textContent = fans;
+      document.getElementById("sponsors").textContent = sponsors;
+    }
+
+    function log(text) {
+      document.getElementById("log").textContent = text;
+    }
+
+    function showTransferOffer() {
+      const modal = document.getElementById("transferModal");
+      const container = document.getElementById("transferChoices");
+      modal.style.display = "block";
+      container.innerHTML = "";
+
+      const randomClubs = [...allClubs].sort(() => 0.5 - Math.random()).slice(0, 3);
+      randomClubs.forEach(clubName => {
+        const btn = document.createElement("button");
+        btn.textContent = clubName;
+        btn.className = "club-option";
+        btn.onclick = () => {
+          club = clubName;
+          localStorage.setItem("club", club);
+          updateStats();
+          modal.style.display = "none";
+          log(`✅ Transferred to ${club}`);
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function buyUpgrade(type) {
+      if (money >= 100000 && !upgrades[type]) {
+        upgrades[type] = true;
+        money -= 100000;
+        updateStats();
+        log(`${type} upgrade activated!`);
+      } else {
+        log("Not enough money or upgrade already purchased.");
+      }
+    }
+  </script></body>
+</html>
